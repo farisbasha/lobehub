@@ -1510,7 +1510,6 @@ table channel_messages {
     
     
     
-    
   }
 }
 
@@ -1540,6 +1539,7 @@ table channels {
   project_id text
   agent_id text
   peer_user_id text
+  agent_pair_key text
   title text [not null]
   sequence integer [not null, default: 0]
   status text [not null, default: 'active']
@@ -1554,6 +1554,7 @@ table channels {
   indexes {
     user_id [name: 'channels_user_id_idx']
     (agent_id, user_id, workspace_id) [name: 'channels_direct_unique', unique]
+    (agent_pair_key, user_id, workspace_id) [name: 'channels_agent_pair_unique', unique]
     
     project_id [name: 'channels_project_id_idx']
     (workspace_id, visibility) [name: 'channels_workspace_visibility_idx']

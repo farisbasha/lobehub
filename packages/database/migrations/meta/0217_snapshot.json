@@ -6,7 +6,7 @@
   },
   "dialect": "postgresql",
   "enums": {},
-  "id": "9528eef4-6455-4538-9530-1ee4be3c7e09",
+  "id": "03b1aad4-3e3e-4675-a834-511ac83a73fa",
   "policies": {},
   "prevId": "7c29d9b7-1cda-4670-a1a0-27ecc5cf0017",
   "roles": {},
@@ -12921,10 +12921,6 @@
         "channel_messages_user_sender_check": {
           "name": "channel_messages_user_sender_check",
           "value": "\"channel_messages\".\"routing_status\" <> 'reply' OR \"channel_messages\".\"user_id\" IS NULL"
-        },
-        "channel_messages_agent_sender_check": {
-          "name": "channel_messages_agent_sender_check",
-          "value": "\"channel_messages\".\"routing_status\" = 'reply' OR \"channel_messages\".\"agent_id\" IS NULL"
         }
       },
       "isRLSEnabled": false
@@ -13094,6 +13090,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "agent_pair_key": {
+          "name": "agent_pair_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "title": {
           "name": "title",
           "type": "text",
@@ -13201,6 +13203,34 @@
           ],
           "isUnique": true,
           "where": "\"channels\".\"agent_id\" IS NOT NULL",
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "channels_agent_pair_unique": {
+          "name": "channels_agent_pair_unique",
+          "columns": [
+            {
+              "expression": "agent_pair_key",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "coalesce(\"workspace_id\", '')",
+              "asc": true,
+              "isExpression": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": true,
+          "where": "\"channels\".\"agent_pair_key\" IS NOT NULL",
           "concurrently": false,
           "method": "btree",
           "with": {}
