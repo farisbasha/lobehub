@@ -145,4 +145,25 @@ describe('ChannelMessagingService', () => {
     );
     expect(send).not.toHaveBeenCalled();
   });
+  it('stops an exchange between Agents after its last ask', async () => {
+    currentRun.mockResolvedValue({
+      ...run(),
+      exchange: { hops: 3, origin: { channelId: 'channel-current', threadId: null } },
+    });
+    directory.mockResolvedValue([
+      current,
+      {
+        agents: [{ agentId: 'agent-other', description: '', memberId: 'm-other', name: 'Other' }],
+        channel: { agentId: 'agent-other', id: 'channel-direct', projectId: null, title: 'Other' },
+      },
+    ]);
+
+    await expect(
+      service().sendMessage(
+        { agentIds: ['agent-other'], channelId: 'channel-direct', content: 'Again?' },
+        'call-4',
+      ),
+    ).rejects.toThrow(/asked 3 times/);
+    expect(send).not.toHaveBeenCalled();
+  });
 });

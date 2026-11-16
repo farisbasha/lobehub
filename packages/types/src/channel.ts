@@ -195,6 +195,29 @@ export const channelRelayOrigin = (
     : undefined;
 };
 
+/**
+ * `metadata.exchange` of a request one Agent wrote to another in their conversation: where the
+ * asking began (what the asking Agent concludes is posted there), and how many asks the exchange
+ * has taken, counting this one. A request it carries is never a relay, so it has no `via`.
+ */
+export interface ChannelAgentExchange {
+  hops: number;
+  origin: ChannelRelayOrigin;
+}
+
+export const channelAgentExchange = (
+  metadata: ChannelMessageMetadata | null | undefined,
+): ChannelAgentExchange | undefined => {
+  const exchange = metadata?.exchange as
+    { hops?: unknown; origin?: Partial<ChannelRelayOrigin> } | undefined;
+  const { hops, origin } = exchange ?? {};
+  if (typeof origin?.channelId !== 'string') return;
+  return {
+    hops: typeof hops === 'number' && Number.isSafeInteger(hops) && hops > 0 ? hops : 1,
+    origin: { channelId: origin.channelId, threadId: origin.threadId ?? null },
+  };
+};
+
 export const channelMessageReceipt = (
   metadata: ChannelMessageMetadata | null | undefined,
 ): ChannelMessageReceipt | undefined => {
@@ -378,8 +401,11 @@ export interface ChannelDirectoryEntry {
   /** The Channel this run answers in. */
   current: boolean;
   id: string;
-  /** `direct`: one person and its bound Agent; `group`: everything else. */
-  kind: 'direct' | 'group';
+  /**
+   * `direct`: one person and its bound Agent; `agents`: where two of the person's Agents ask each
+   * other; `group`: everything else.
+   */
+  kind: 'agents' | 'direct' | 'group';
   projectId: string | null;
   title: string;
 }
