@@ -290,6 +290,12 @@ export const ChannelMessage = ({
                 </Text>
               </Flexbox>
             )}
+            {!message.via && message.author.type === 'agent' && message.receipt && (
+              // What the Agent concluded after asking another Agent in their conversation.
+              <Text fontSize={12} type="secondary">
+                {t('message.agentExchangeFrom', { channel: message.receipt.channelTitle })}
+              </Text>
+            )}
             {!isRoot &&
               showsReplyQuote(message) &&
               (message.replyTo ? (

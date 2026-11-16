@@ -243,6 +243,7 @@ export default {
   'reply.to': 'Replying to {{name}}',
   'reply.cancel': 'Cancel reply',
   'reply.attachment': 'Attachment',
+  'message.agentExchangeFrom': 'After asking in #{{channel}}',
   'message.relayReplyFrom': '{{name}} replied in #{{channel}}',
   'message.relayedBy': 'Relayed by {{name}}',
   'reply.viewOriginal': 'View original message',

@@ -336,3 +336,31 @@ describe('ChannelMessage thread card', () => {
     expect(screen.queryByText('threadCard.messages')).toBeNull();
   });
 });
+
+describe('ChannelMessage after an exchange between Agents', () => {
+  it("labels an Agent's report with the conversation it asked in", () => {
+    render(
+      <ChannelMessage
+        detail={detail}
+        message={{
+          ...message({ avatar: null, id: 'agt_1', name: 'Yuno', type: 'agent' }),
+          receipt: { channelId: 'chn_pair', channelTitle: 'Yuno · Sanjo', messageId: 'msg_2' },
+          via: null,
+        }}
+      />,
+    );
+
+    expect(screen.getByText('message.agentExchangeFrom')).toBeTruthy();
+  });
+
+  it('shows no such label on an ordinary Agent reply', () => {
+    render(
+      <ChannelMessage
+        detail={detail}
+        message={message({ avatar: null, id: 'agt_1', name: 'Yuno', type: 'agent' })}
+      />,
+    );
+
+    expect(screen.queryByText('message.agentExchangeFrom')).toBeNull();
+  });
+});
